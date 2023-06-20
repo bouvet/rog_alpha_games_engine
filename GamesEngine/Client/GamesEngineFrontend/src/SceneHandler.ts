@@ -81,11 +81,11 @@ export function AddDynamicObjects(objects: any[]) {
 }
 
 function SetMatrix(obj: THREE.Mesh, gameObject: any){
-    obj.position.x = gameObject.WorldMatrix._matrix.M41;
-    obj.position.y = gameObject.WorldMatrix._matrix.M42;
-    obj.position.z = gameObject.WorldMatrix._matrix.M43;
+    obj.position.x = gameObject.WorldMatrix.M41;
+    obj.position.y = gameObject.WorldMatrix.M42;
+    obj.position.z = gameObject.WorldMatrix.M43;
 
-    obj.rotation.x = gameObject.WorldMatrix._matrix.M11;
-    obj.rotation.y = gameObject.WorldMatrix._matrix.M12;
-    obj.rotation.z = gameObject.WorldMatrix._matrix.M13;
+    obj.rotation.x = gameObject.WorldMatrix.M11;
+    obj.rotation.y = gameObject.WorldMatrix.M12;
+    obj.rotation.z = gameObject.WorldMatrix.M13;
 }

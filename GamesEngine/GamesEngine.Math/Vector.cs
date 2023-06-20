@@ -33,10 +33,35 @@ namespace GamesEngine.Math
         }
 
         [JsonProperty]
+        public float X
+        {
+            get => _vector.X;
+            set => _vector.X = value;
+        }
+
+        [JsonProperty]
+        public float Y
+        {
+            get => _vector.Y;
+            set => _vector.Y = value;
+        }
+
+        [JsonProperty]
+        public float Z
+        {
+            get => _vector.Z;
+            set => _vector.Z = value;
+        }
+
         private Vector3 _vector;
         public Vector(float x, float y, float z)
         {
             _vector = new Vector3(x, y, z);
+        }
+
+        public Vector()
+        {
+            _vector = new Vector3();
         }
         public float GetAbsolute()
         {
