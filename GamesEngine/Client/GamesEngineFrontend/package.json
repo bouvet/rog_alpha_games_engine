@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@microsoft/signalr": "^7.0.5",
+    "class-transformer": "^0.5.1",
     "three": "^0.152.2"
   }
 }
