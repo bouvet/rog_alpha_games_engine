@@ -5,17 +5,32 @@ using GamesEngine.Patterns.Query;
 namespace GamesEngine.Patterns;
 
 public delegate void QueryCallback(string response);
-
 public delegate void CommandCallback(string response);
-
 public delegate void FailureCallback();
 
 public interface ICommunicationDispatcher
 {
+
+    /// <summary>
+    /// Resolves the given command by finding the appropriate command handler and invoking it with the given command.
+    /// </summary>
+    /// <param name="command">The command to resolve.</param>
+    /// <param name="callback">The callback to invoke when the command has been successfully resolved.</param>
+    /// <param name="failureCallback">The callback to invoke when the command resolution has failed.</param>
     void ResolveCommand(ICommand command, CommandCallback callback, FailureCallback failureCallback);
+
+    /// <summary>
+    /// Resolves the given query by finding the appropriate query handler and invoking it with the given query.
+    /// </summary>
+    /// <param name="query">The query to resolve.</param>
+    /// <param name="callback">The callback to invoke when the query has been successfully resolved.</param>
+    /// <param name="failureCallback">The callback to invoke when the query resolution has failed.</param>
     void ResolveQuery(IQuery query, QueryCallback callback, FailureCallback failureCallback);
 }
 
+/// <summary>
+/// Defines the interface for a class that provides access to the types of command and query handlers used by a communication dispatcher.
+/// </summary>
 public interface IDispatcherTypes
 {
     List<Type> QueryHandlers();
@@ -24,19 +39,32 @@ public interface IDispatcherTypes
 
 public class DispatcherTypes : IDispatcherTypes
 {
+    /// <summary>
+    /// This method is used to get all the query handlers in the system.
+    /// </summary>
+    /// <returns>A list of query handlers.</returns>
     public List<Type> QueryHandlers()
     {
-        return Types(typeof(IQueryHandler<,>));
+        return FindTypes(typeof(IQueryHandler<,>));
     }
 
+    // Find all types that implement ICommandHandler<,>.
+    // This is done by finding all types in all assemblies that are not abstract or interfaces,
+    // and then check if any of the types they implement are ICommandHandler<,>.
+    // If they are, add them to a list of types and return it.
     public List<Type> CommandHandlers()
     {
-        return Types(typeof(ICommandHandler<,>));
+        return FindTypes(typeof(ICommandHandler<,>));
     }
 
-    private static List<Type> Types(Type checkType)
+    /// <summary>
+    /// Finds all types in all assemblies that implement the specified interface type.
+    /// </summary>
+    /// <param name="checkType">The interface type to check for.</param>
+    /// <returns>A list of types that implement the specified interface type.</returns>
+    private static List<Type> FindTypes(Type checkType)
     {
-        var queryHandlers = new List<Type>();
+        var types = new List<Type>();
         var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
         foreach (var assembly in assemblies)
@@ -46,17 +74,26 @@ public class DispatcherTypes : IDispatcherTypes
 
             if (type.GetInterfaces().Any(iface =>
                     iface.IsGenericType && iface.GetGenericTypeDefinition() == checkType))
-                queryHandlers.Add(type);
+                types.Add(type);
         }
 
-        return queryHandlers;
+        return types;
     }
 }
 
 public class CommunicationDispatcher : ICommunicationDispatcher
 {
-    public IDispatcherTypes DispatcherTypes { get; set; } = new DispatcherTypes();
+    /// <summary>
+    /// Gets or sets the dispatcher types used to resolve commands and queries.
+    /// </summary>
+    protected IDispatcherTypes DispatcherTypes { get; init; } = new DispatcherTypes();
 
+    /// <summary>
+    /// Resolves the given command by finding the appropriate command handler and invoking it with the given command.
+    /// </summary>
+    /// <param name="command">The command to resolve.</param>
+    /// <param name="callback">The callback to invoke when the command has been successfully resolved.</param>
+    /// <param name="failureCallback">The callback to invoke when the command resolution has failed.</param>
     public void ResolveCommand(ICommand command, CommandCallback callback, FailureCallback failureCallback)
     {
         var method = typeof(CommunicationDispatcher).GetMethod(nameof(InvokeCommandHandler),
@@ -67,8 +104,8 @@ public class CommunicationDispatcher : ICommunicationDispatcher
             {
                 var commandType = command.GetType();
                 var instance = Activator.CreateInstance(type);
-                var genericMethod = method.MakeGenericMethod(commandType, typeof(ICommandCallback<string>));
-                genericMethod.Invoke(this, new[]
+                var genericMethod = method?.MakeGenericMethod(commandType, typeof(ICommandCallback<string>));
+                genericMethod?.Invoke(this, new[]
                 {
                     instance, command, new CommandCallback<string>(
                         response => { callback(response); },
@@ -78,6 +115,12 @@ public class CommunicationDispatcher : ICommunicationDispatcher
             }
     }
 
+    /// <summary>
+    /// Resolves the given query by finding the appropriate query handler and invoking it with the given query.
+    /// </summary>
+    /// <param name="query">The query to resolve.</param>
+    /// <param name="callback">The callback to invoke when the query has been successfully resolved.</param>
+    /// <param name="failureCallback">The callback to invoke when the query resolution has failed.</param>
     public void ResolveQuery(IQuery query, QueryCallback callback, FailureCallback failureCallback)
     {
         var method = typeof(CommunicationDispatcher).GetMethod(nameof(InvokeQueryHandler),
@@ -90,8 +133,8 @@ public class CommunicationDispatcher : ICommunicationDispatcher
             {
                 var queryType = query.GetType();
                 var instance = Activator.CreateInstance(type);
-                var genericMethod = method.MakeGenericMethod(queryType, typeof(IQueryCallback<string>));
-                genericMethod.Invoke(this, new[]
+                var genericMethod = method?.MakeGenericMethod(queryType, typeof(IQueryCallback<string>));
+                genericMethod?.Invoke(this, new[]
                 {
                     instance, query, new QueryCallback<string>(
                         response => { callback(response); },
@@ -101,6 +144,16 @@ public class CommunicationDispatcher : ICommunicationDispatcher
             }
     }
 
+    /// <summary>
+    /// Invokes the given command handler with the specified command and callback.
+    /// </summary>
+    /// <typeparam name="TCommand">The type of command to handle.</typeparam>
+    /// <typeparam name="TCallback">The type of callback to use.</typeparam>
+    /// <param name="handler">The command handler to invoke.</param>
+    /// <param name="command">The command to handle.</param>
+    /// <param name="callback">The callback to use.</param>
+    /// <exception cref="ArgumentNullException">Thrown when the handler, command, or callback is null.</exception>
+    /// <exception cref="ArgumentException">Thrown when the command or callback is of the wrong type.</exception>
     private void InvokeCommandHandler<TCommand, TCallback>(ICommandHandler<TCommand, TCallback> handler,
         TCommand command, TCallback callback)
         where TCommand : ICommand
@@ -109,6 +162,16 @@ public class CommunicationDispatcher : ICommunicationDispatcher
         handler.Handle(command, callback);
     }
 
+    /// <summary>
+    /// Invokes the given query handler with the specified query and callback.
+    /// </summary>
+    /// <typeparam name="TQuery">The type of query to handle.</typeparam>
+    /// <typeparam name="TCallback">The type of callback to use.</typeparam>
+    /// <param name="handler">The query handler to invoke.</param>
+    /// <param name="query">The query to handle.</param>
+    /// <param name="callback">The callback to use.</param>
+    /// <exception cref="ArgumentNullException">Thrown when the handler, query, or callback is null.</exception>
+    /// <exception cref="ArgumentException">Thrown when the query or callback is of the wrong type.</exception>
     private void InvokeQueryHandler<TQuery, TCallback>(IQueryHandler<TQuery, TCallback> handler, TQuery query,
         TCallback callback)
         where TQuery : IQuery

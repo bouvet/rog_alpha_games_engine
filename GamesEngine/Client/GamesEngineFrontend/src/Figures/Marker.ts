@@ -2,9 +2,11 @@ import * as THREE from 'three';
 
 
 export function Marker(scene: THREE.Scene) {
-    var marker = new THREE.Mesh(new THREE.SphereGeometry(0.062, 4, 2), new THREE.MeshBasicMaterial({
+    const markerGeometry = new THREE.SphereGeometry(0.1, 4, 4)
+    const markerMaterial = new THREE.MeshBasicMaterial({
         color: "red"
-    }));
+    });
+    const marker = new THREE.Mesh(markerGeometry, markerMaterial);
     scene.add(marker);
     return marker;
 }

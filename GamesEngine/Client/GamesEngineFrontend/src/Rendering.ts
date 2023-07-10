@@ -1,9 +1,8 @@
 import * as THREE from 'three';
 import {Marker} from "./Figures/Marker.ts";
-import {Grid} from "./Figures/Grid.ts";
 import {keys} from "./Events/InputHandler.ts";
-import {AxesHelper} from "./Helpers/AxesHelper.ts";
 import "./style.css";
+import {dynamicObjects, LIGHT, SHADOWS} from "./SceneHandler.ts";
 
 export const camera = new THREE.PerspectiveCamera(
     60,
@@ -12,10 +11,14 @@ export const camera = new THREE.PerspectiveCamera(
     1000
 );
 camera.position.set(0, 0, 5);
+camera.lookAt(new THREE.Vector3(0, 5, 0));
 
 const renderer = new THREE.WebGLRenderer({
     antialias: true,
 });
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
 renderer.setSize(innerWidth, innerHeight);
 renderer.setPixelRatio(2);
 document.body.appendChild(renderer.domElement);
@@ -28,12 +31,20 @@ export const mouse = new THREE.Vector2();
 export const intersectPoint = new THREE.Vector3();
 export const marker = Marker(scene);
 
-Grid(scene);
-AxesHelper(scene);
+//AxesHelper(scene);
+//Grid(scene);
 
-const light = new THREE.HemisphereLight('white', "gray", 1);
-light.position.set(0, 100, 0);
-scene.add(light);
+export const pointLight = new THREE.PointLight('white', 0.5);
+const worldLight = new THREE.HemisphereLight('white', "gray", SHADOWS ? 0.1 : 0.25);
+worldLight.position.set(0, 0, 5);
+scene.add(worldLight);
+
+if(LIGHT){
+    pointLight.position.set(0, 0, 2);
+    pointLight.castShadow = true;
+    scene.add(pointLight);
+}
+
 
 // Handle window resize
 window.addEventListener('resize', () => {
@@ -64,4 +75,10 @@ export function render() {
     updateDirection();
     requestAnimationFrame(render);
     renderer.render(scene, camera);
+
+    dynamicObjects.forEach((object) => {
+       if(object.userData.update){
+          object.userData.update(object);
+       }
+    });
 }

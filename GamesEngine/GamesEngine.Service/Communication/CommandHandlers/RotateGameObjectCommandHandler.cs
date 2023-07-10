@@ -11,12 +11,12 @@ namespace GamesEngine.Service.Communication.CommandHandlers
     {
         public void Handle(RotateGameObjectCommand command, ICommandCallback<string> callback)
         {
-            IGameObject gameObject = GameHandler.GetGame(command.ConnectionId).FindGameObject(GameHandler.GetClient(command.ConnectionId).PlayerGameObject.Id);
+            IGameObject? gameObject = GameHandler.GetGame(command.ConnectionId).FindGameObject(GameHandler.GetClient(command.ConnectionId).PlayerGameObject.Id);
 
             if (gameObject != null)
             {
                 var rot = CalculateRotation(gameObject.WorldMatrix.GetPosition(), command.MousePositionX, command.MousePositionY);
-                IVector rotationVector = new Math.Vector(1, rot, 0);
+                IVector rotationVector = new Math.Vector(90, rot, 0);
                 gameObject.WorldMatrix.SetRotation(rotationVector);
                 callback.OnSuccess("success");
                 return;
@@ -35,7 +35,7 @@ namespace GamesEngine.Service.Communication.CommandHandlers
 
             // Convert the rotation angle to degrees
             float rotationAngleDegrees = rotationAngleRadians * (180.0f / MathF.PI);
-            return rotationAngleRadians;
+            return rotationAngleDegrees + 90;
         }
     }
 }

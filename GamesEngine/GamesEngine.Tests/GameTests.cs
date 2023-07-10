@@ -4,7 +4,7 @@ using GamesEngine.Service.Game;
 using GamesEngine.Service.Game.Object;
 using GamesEngine.Tests.Fakes.GameObjects;
 
-namespace GamesEngine.Tests.Fakes;
+namespace GamesEngine.Tests;
 
 [TestFixture]
 public class GameTests
@@ -24,7 +24,7 @@ public class GameTests
     {
         // Arrange
         Game game = new Game();
-        MockDynamicObject gameObject = new MockDynamicObject();
+        MockDynamicObject? gameObject = new MockDynamicObject();
 
         // Act
         game.AddGameObject(gameObject);
@@ -39,7 +39,7 @@ public class GameTests
     {
         // Arrange
         Game game = new Game();
-        MockDynamicObject gameObject = new MockDynamicObject();
+        MockDynamicObject? gameObject = new MockDynamicObject();
 
         // Act
         game.AddGameObject(gameObject);
@@ -56,7 +56,7 @@ public class GameTests
     {
         // Arrange
         Game game = new Game();
-        MockDynamicObject gameObject = new MockDynamicObject();
+        MockDynamicObject? gameObject = new MockDynamicObject();
 
         // Act
         game.AddGameObject(gameObject);

@@ -1,5 +1,4 @@
 using GamesEngine.Math;
-using GamesEngine.Service.Game.Bounds;
 using GamesEngine.Service.Game.Object;
 using GamesEngine.Service.GameLoop;
 
@@ -10,19 +9,19 @@ public class MockDynamicObject : IDynamicGameObject
     public int Id { get; set; } = 1;
     public IMatrix WorldMatrix { get; set; } = new Matrix();
     public IMatrix LocalMatrix { get; set; } = new Matrix();
-    public IGameObject Parent { get; set; } = null;
+    public IGameObject? Parent { get; set; } = null;
     public List<IGameObject> Children { get; set; } = new List<IGameObject>();
     public void Render()
     {
         throw new NotImplementedException();
     }
 
-    public bool Collision(IGameObject otherGameObject)
+    public void Collision(IGameObject? otherGameObject)
     {
         throw new NotImplementedException();
     }
 
-    public IBounds GetBounds()
+    public IBounds? GetBounds()
     {
         throw new NotImplementedException();
     }

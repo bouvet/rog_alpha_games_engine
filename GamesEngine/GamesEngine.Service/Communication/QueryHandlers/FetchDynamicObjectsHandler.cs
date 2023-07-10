@@ -9,7 +9,7 @@ public class FetchDynamicObjectsHandler : IQueryHandler<FetchDynamicObjectsQuery
 {
     public void Handle(FetchDynamicObjectsQuery query, IQueryCallback<string> callBack)
     {
-        List<IDynamicGameObject> objects = GameHandler.GetGame(query.ConnectionId).SceneGraph.DynamicGameObject.GetValues();
+        List<IDynamicGameObject?> objects = GameHandler.GetGame(query.ConnectionId).SceneGraph.DynamicGameObject.GetValues();
         string jsonString = JsonConvert.SerializeObject(objects, Formatting.Indented, new JsonSerializerSettings
         {
             ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver()

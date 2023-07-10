@@ -32,7 +32,7 @@ public class GameLoopTests
         game.GameLoop = gameLoop;
 
         IMatrix position = new Matrix();
-        IDynamicGameObject gameObject = new MockMovingObject(new Vector(1, 1, 1));
+        IDynamicGameObject? gameObject = new MockMovingObject(new Vector(1, 1, 1));
         gameObject.WorldMatrix = position;
         game.AddGameObject(gameObject);
 

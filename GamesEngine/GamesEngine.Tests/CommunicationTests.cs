@@ -8,6 +8,8 @@ using GamesEngine.Patterns.Command;
 using GamesEngine.Patterns.Query;
 using GamesEngine.Service;
 using GamesEngine.Service.Communication;
+using GamesEngine.Service.Game;
+using GamesEngine.Service.Game.Maps;
 using GamesEngine.Service.Game.Object;
 using GamesEngine.Tests.Fakes;
 using GamesEngine.Tests.Fakes.GameObjects;
@@ -181,15 +183,25 @@ public class CommunicationTests
     public void ShouldBeAbleToGetObjects()
     {
         //Arrange
-        GameHandler.Game.AddGameObject(new MockMovingObject(new Vector(1,1,1)));
+        GameHandler.MapsHandler = new MockMapsHandler(new MockMapMaterialHandler(null), new List<IGameMap>());
+        GameHandler.UserHandler = new MockUserHandler(null);
+
+        var connectionId = "TEST";
+        IGame mockGame = new Game();
+        GameHandler.AddGame(0, mockGame);
+        GameHandler.AddPlayerId(connectionId, 0);
+
+        mockGame.AddGameObject(new MockMovingObject(new Vector(1,1,1)));
         var result = "";
         IDynamicGameObject gameObject = new MockMovingObject(new Vector(1, 1, 1));
         gameObject.Id = 1;
         List<IDynamicGameObject> list = new List<IDynamicGameObject>();
         list.Add(gameObject);
+        var query = new FetchDynamicObjectsQuery();
+        query.ConnectionId = connectionId;
 
         //Act
-        CommunicationDispatcher.ResolveQuery(new FetchDynamicObjectsQuery(),
+        CommunicationDispatcher.ResolveQuery(query,
             (response) => { result = response;},
             () => { Assert.Fail(); });
 

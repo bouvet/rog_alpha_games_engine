@@ -10,12 +10,14 @@ namespace GamesEngine.Service.Client
 {
     public interface IClient
     {
-        public PlayerGameObject PlayerGameObject { get; set;  }
-        public string ConnectionId { get; set; }
+        public int UserId { get; set; }
+        public PlayerGameObject? PlayerGameObject { get; set;  }
+        public string? ConnectionId { get; set; }
     }
     public class Client : IClient
     {
-        public PlayerGameObject PlayerGameObject { get; set; }
-        public string ConnectionId { get; set; }
+        public int UserId { get; set; }
+        public PlayerGameObject? PlayerGameObject { get; set; }
+        public string? ConnectionId { get; set; }
     }
 }

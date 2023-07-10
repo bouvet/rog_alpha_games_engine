@@ -12,7 +12,7 @@ public class PlayerStatusHandler : ICommandHandler<PlayerStatusCommand, ICommand
     {
         if (command.IsJoin)
         {
-            GameHandler.GetGame(command.ConnectionId).OnConnect(command.ConnectionId);
+            GameHandler.OnPlayerConnect(command.ConnectionId, null);
 
             var playerId = GameHandler.GetClient(command.ConnectionId).PlayerGameObject.Id;
             GameHandler.Communication.SendToClient(command.ConnectionId, new Response("PlayerId", JsonConvert.SerializeObject(new Dictionary<string, object>
@@ -22,7 +22,7 @@ public class PlayerStatusHandler : ICommandHandler<PlayerStatusCommand, ICommand
         }
         else
         {
-            GameHandler.GetGame(command.ConnectionId).OnDisconnect(GameHandler.GetClient(command.ConnectionId));
+            GameHandler.OnPlayerDisconnect(command.ConnectionId);
         }
     }
 }

@@ -1,0 +1,45 @@
+{
+  "MapName": "Map1",
+  "Width": 17,
+  "Height": 17,
+  "Objects": [
+    {
+      "Type": "Custom",
+      "Position": {
+        "X": 2,
+        "Y": 1,
+        "Z": 0
+      },
+      "Properties": {
+        "Material": "RedOrb"
+      }
+    },
+    {
+      "Type": "Custom",
+      "Position": {
+        "X": -1,
+        "Y": -2,
+        "Z": 0
+      },
+      "Properties": {
+        "Material": "BlueOrb"
+      }
+    },
+    {
+      "Type": "Wall",
+      "Position": {
+        "X": 5,
+        "Y": 1,
+        "Z": 0
+      }
+    },
+    {
+      "Type": "Obstacle",
+      "Position": {
+        "X": -2,
+        "Y": 0,
+        "Z": 0
+      }
+    }
+  ]
+}

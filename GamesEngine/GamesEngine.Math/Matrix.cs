@@ -11,11 +11,140 @@ namespace GamesEngine.Math
         void SetRotation(IVector rotation);
         void SetScale(IVector scale);
         void SetPosition(IVector position);
+
+        public IMatrix Copy()
+        {
+            Matrix matrix = new Matrix();
+            matrix.SetPosition(GetPosition());
+            matrix.SetRotation(GetRotation());
+            matrix.SetScale(GetScale());
+            return matrix;
+        }
     }
+
     public class Matrix : IMatrix
     {
+        Matrix4x4 _matrix = new();
+
+        public Matrix()
+        {
+            SetScale(new Vector(1,1,1));
+            SetPosition(new Vector(0,0,0));
+            SetRotation(new Vector(0,0,0));
+        }
+
         [JsonProperty]
-        Matrix4x4 _matrix = new Matrix4x4();
+        public float M11
+        {
+            get => _matrix.M11;
+            set => _matrix.M11 = value;
+        }
+
+        [JsonProperty]
+        public float M12
+        {
+            get => _matrix.M12;
+            set => _matrix.M12 = value;
+        }
+
+        [JsonProperty]
+        public float M13
+        {
+            get => _matrix.M13;
+            set => _matrix.M13 = value;
+        }
+
+        [JsonProperty]
+        public float M14
+        {
+            get => _matrix.M14;
+            set => _matrix.M14 = value;
+        }
+
+        [JsonProperty]
+        public float M21
+        {
+            get => _matrix.M21;
+            set => _matrix.M21 = value;
+        }
+
+        [JsonProperty]
+        public float M22
+        {
+            get => _matrix.M22;
+            set => _matrix.M22 = value;
+        }
+
+        [JsonProperty]
+        public float M23
+        {
+            get => _matrix.M23;
+            set => _matrix.M23 = value;
+        }
+
+        [JsonProperty]
+        public float M24
+        {
+            get => _matrix.M24;
+            set => _matrix.M24 = value;
+        }
+
+        [JsonProperty]
+        public float M31
+        {
+            get => _matrix.M31;
+            set => _matrix.M31 = value;
+        }
+
+        [JsonProperty]
+        public float M32
+        {
+            get => _matrix.M32;
+            set => _matrix.M32 = value;
+        }
+
+        [JsonProperty]
+        public float M33
+        {
+            get => _matrix.M33;
+            set => _matrix.M33 = value;
+        }
+
+        [JsonProperty]
+        public float M34
+        {
+            get => _matrix.M34;
+            set => _matrix.M34 = value;
+        }
+
+        [JsonProperty]
+        public float M41
+        {
+            get => _matrix.M41;
+            set => _matrix.M41 = value;
+        }
+
+        [JsonProperty]
+        public float M42
+        {
+            get => _matrix.M42;
+            set => _matrix.M42 = value;
+        }
+
+        [JsonProperty]
+        public float M43
+        {
+            get => _matrix.M43;
+            set => _matrix.M43 = value;
+        }
+
+        [JsonProperty]
+        public float M44
+        {
+            get => _matrix.M44;
+            set => _matrix.M44 = value;
+        }
+
         public IVector GetRotation()
         {
             return new Vector(_matrix.M11, _matrix.M12, _matrix.M13);
@@ -52,5 +181,6 @@ namespace GamesEngine.Math
             tempMatrix.M43 = position.GetZ();
             _matrix = tempMatrix;
         }
+
     }
 }

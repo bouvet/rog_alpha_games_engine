@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StartUp", "StartUp\StartUp.
 		{6859694A-D342-4742-B9E5-E65EDD49464D} = {6859694A-D342-4742-B9E5-E65EDD49464D}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GamesEngine.Users", "GamesEngine.Users\GamesEngine.Users.csproj", "{AA6D8C99-28B9-4A77-9639-6A83AB45582E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,6 +55,10 @@ Global
 		{5C2198D3-5B69-4C77-8CDE-7473E6FC327D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5C2198D3-5B69-4C77-8CDE-7473E6FC327D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5C2198D3-5B69-4C77-8CDE-7473E6FC327D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA6D8C99-28B9-4A77-9639-6A83AB45582E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA6D8C99-28B9-4A77-9639-6A83AB45582E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA6D8C99-28B9-4A77-9639-6A83AB45582E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA6D8C99-28B9-4A77-9639-6A83AB45582E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

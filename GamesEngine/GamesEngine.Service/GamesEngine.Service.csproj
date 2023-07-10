@@ -11,6 +11,7 @@
     <ProjectReference Include="..\GamesEngine.Communication\GamesEngine.Communication.csproj" />
     <ProjectReference Include="..\GamesEngine.Patterns\GamesEngine.Patterns.csproj" />
     <ProjectReference Include="..\GamesEngine.Math\GamesEngine.Math.csproj" />
+    <ProjectReference Include="..\GamesEngine.Users\GamesEngine.Users.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,0 +1,33 @@
+[
+  {
+    "Name": "User 1",
+    "ID": 0,
+    "Friends": [
+      "1"
+    ]
+  },
+  {
+    "Name": "User 2",
+    "ID": 1,
+    "Friends": [
+      "2"
+    ]
+  },
+  {
+    "Name": "User 3",
+    "ID": 2,
+    "Friends": [
+      "3",
+      "0"
+    ]
+  },
+  {
+    "Name": "User 4",
+    "ID": 3,
+    "Friends": [
+      "2",
+      "1",
+      "0"
+    ]
+  }
+]

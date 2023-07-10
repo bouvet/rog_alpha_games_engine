@@ -1,11 +1,17 @@
 
-import {onDocumentKeyDown, onDocumentKeyUp, sendMouseEvent, startInputHandler} from "./Events/InputHandler.ts";
+import {
+    mouseDown,
+    onDocumentKeyDown,
+    onDocumentKeyUp,
+    sendMouseEvent,
+    startInputHandler
+} from "./Events/InputHandler.ts";
 import {AddDispatchHandlers} from "./Communication/DispatchHandlers.ts";
 import {render} from "./Rendering.ts";
 import {AddTypeHandlers} from "./ObjectTypeHandler.ts";
-import {Communication, ICommunication} from "./Communication/Communication.ts";
 import {Dispatcher} from "./Communication/Dispatcher.ts";
 import {ICommunicationStrategy, SignalRCommunicationStrategy} from "./Communication/CommunicationStrategy.ts";
+import {Communication, ICommunication} from "./Communication/Communication.ts";
 
 export const strategy: ICommunicationStrategy = new SignalRCommunicationStrategy();
 export const dispatcher = new Dispatcher();
@@ -19,18 +25,14 @@ communication.SendToServer({Type: "FetchStaticObjects"});
 
 setInterval(() => {
     communication.SendToServer({Type: "FetchDynamicObjects"});
-}, 100);
+}, 200);
 
-window.addEventListener("mousemove", (event) => {
+window.addEventListener("mousemove", (event: MouseEvent) => {
     sendMouseEvent(event.clientX, event.clientY);
 });
 document.addEventListener("keydown", onDocumentKeyDown, false);
 document.addEventListener("keyup", onDocumentKeyUp, false);
-document.addEventListener('mousedown', function (event) {
-    if (event.button === 0) {
-        //shootBeam();
-    }
-});
+document.addEventListener('mousedown', mouseDown, false);
 
 render();
 AddTypeHandlers();

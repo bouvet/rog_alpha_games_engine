@@ -1,52 +1,106 @@
-using GamesEngine.Communication;
-using GamesEngine.Math;
+using System.Collections.Concurrent;
 using GamesEngine.Patterns;
 using GamesEngine.Service.Client;
 using GamesEngine.Service.Communication;
 using GamesEngine.Service.Game;
-using GamesEngine.Service.Game.Object.StaticGameObjects;
+using GamesEngine.Service.Game.Maps;
+using GamesEngine.Users;
 
 namespace GamesEngine.Service;
 
-public class GameHandler
+public static class GameHandler
 {
     public static ICommunicationDispatcher CommunicationDispatcher { get; set; }
     public static ICommunicationStrategy CommunicationStrategy { get; set; }
     public static ICommunication Communication { get; set; }
-    public static IGame Game { get; set; } = new Game.Game();
+
+    public static IUserHandler UserHandler { get; set; }
+    public static IMapsHandler MapsHandler { get; set; }
+
+    private static ConcurrentDictionary<string, int> PlayerGameId = new();
+    private static ConcurrentDictionary<int, IGame> Games = new();
+
+    public static void AddGame(int id, IGame game)
+    {
+        Games.TryAdd(id, game);
+    }
+
+    public static void AddPlayerId(string id, int gameId)
+    {
+        PlayerGameId.TryAdd(id, gameId);
+    }
+
+    public static void RemovePlayerId(string id)
+    {
+        PlayerGameId.TryRemove(id, out _);
+    }
 
     public static IGame GetGame(string id)
     {
-        return Game;
+        var gameId = PlayerGameId[id];
+        return Games[gameId];
     }
 
-    public static IClient GetClient(string id)
+    public static void OnPlayerConnect(string connectionId, int? targetGameId)
     {
-        return Game.Clients.Find(e => e.ConnectionId == id);
-    }
-
-    private static Timer timer;
-    public static void Start()
-    {
-        timer = new Timer(Update, null, 0, 50);
-
-        var size = 14;
-        for (var x = 0; x < size; x++)
+        if (targetGameId == null)
         {
-            for (var y = 0; y < size; y++)
+            targetGameId = Games.Keys.FirstOrDefault();
+        }
+
+        if (targetGameId != null)
+        {
+            var id = (int)targetGameId;
+            AddPlayerId(connectionId, id);
+
+            if (!Games.ContainsKey(id))
             {
-                if(x == 0 || x == size - 1 || y == 0 || y == size - 1)
-                {
-                    BoxGameObject wallGameObject = new BoxGameObject();
-                    wallGameObject.WorldMatrix.SetPosition(new Vector(x - (size/ 2), y - (size / 2), 0));
-                    Game.AddGameObject(wallGameObject);
-                }
+                //Picks a random Map
+                var games = MapsHandler.GetMaps().ToList();
+                var selectedGame = games[new Random().Next(games.Count)];
+                AddGame(id, new Game.Game(selectedGame));
             }
         }
+
+        var game = GetGame(connectionId);
+        game.OnConnect(connectionId);
     }
 
-    private static void Update(Object o)
+    public static void OnPlayerDisconnect(string connectionId)
     {
-        Game.GameLoop.Update();
+        var game = GetGame(connectionId);
+        var client = GetClient(connectionId);
+        game.OnDisconnect(client);
+
+        if(game.Clients.Count == 0)
+        {
+            Games.TryRemove(PlayerGameId[connectionId], out _);
+        }
+
+        RemovePlayerId(connectionId);
+    }
+
+    public static IClient? GetClient(string id)
+    {
+        return GetGame(id).Clients.Find(e => e.ConnectionId != null && e.ConnectionId == id);
+    }
+
+    public static void Start()
+    {
+        UserHandler = new UserHandler();
+        MapsHandler = new MapsHandler();
+
+        new Timer(Update, null, 0, 50);
+    }
+
+    private static void Update(object o)
+    {
+        foreach (var game in Games.Values)
+        {
+            if (game.GameLoop != null)
+            {
+                game.GameLoop.Update();
+            }
+        }
     }
 }
